@@ -1,0 +1,45 @@
+#
+# ==== General info ====
+#
+# * After editing of this file you need to check server logs to be
+# sure that no errors was appeared.
+#
+
+#
+# Show debug info. Possible values: true | false (default = false)
+#
+# This option can affect the performance.
+#
+debug: false
+
+explosion-boosters:
+  - TNT
+  - END_CRYSTAL
+  - NETHER_STAR
+  - HEAVY_CORE
+
+TNT:
+  effect: BURST
+  duration-per-item: 1
+  power-per-item: 1
+
+END_CRYSTAL:
+  effect: BALL
+  duration-per-item: 2
+  power-per-item: 2
+
+NETHER_STAR:
+  effect: BALL_LARGE
+  duration-per-item: 5
+  power-per-item: 20
+
+HEAVY_CORE:
+  effect: CREEPER
+  duration-per-item: 7
+  power-per-item: 50
+
+# WARNING: Don't change the name, don't include it into 'explosion-boosters'
+EGG-SYSTEM:
+  effect: STAR
+  duration-per-item: 5
+  power-per-item: 1

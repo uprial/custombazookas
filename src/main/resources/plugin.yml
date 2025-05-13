@@ -1,0 +1,14 @@
+name: CustomBazookas
+main: com.gmail.uprial.custombazookas.CustomBazookas
+version: 0.1.0
+api-version: 1.14
+commands:
+  custombazookas:
+    description: CustomBazookas config help
+    usage: /custombazookas help
+    permission:
+    permission-message:
+permissions:
+  custombazookas.reload:
+    description: Gives access to CustomBazookas 'reload' command
+    default: op
