@@ -43,9 +43,9 @@ Fire the bazooka:
 I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 
 ## Useful links
-* [Project on GitHub]
-* [Project on Bukkit Dev]
-* [Project on Spigot]
+* [Project on GitHub](https://github.com/uprial/custombazookas/)
+* [Project on Bukkit Dev](https://www.spigotmc.org/resources/custombazookas.124997/)
+* [Project on Spigot](https://legacy.curseforge.com/minecraft/bukkit-plugins/custombazookas)
 
 ## Related projects
 * CustomCreatures: [Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/customcreatures/), [GitHub](https://github.com/uprial/customcreatures), [Spigot](https://www.spigotmc.org/resources/customcreatures.68711/)
