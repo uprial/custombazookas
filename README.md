@@ -8,6 +8,8 @@ Tested on Spigot-1.21.5.
 
 Make bazookas from fireworks joined with TNTs, end crystals, nether stars, heavy cores, spawn eggs.
 
+The most essential aspects are configurable.
+
 Hint: increased view-distance and simulation-distance in server.properties improve experience of massive explosions.
 
 ## Features
