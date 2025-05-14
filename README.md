@@ -30,6 +30,7 @@ Fire the bazooka:
 ![Explosion-8](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-8.png)
 ![Explosion-20](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-20.png)
 ![Explosion-400](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-400.png)
+![Explosion-400](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-400-2.png)
 
 ## Commands
 
