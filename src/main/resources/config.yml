@@ -12,6 +12,15 @@
 #
 debug: false
 
+# WARNING: Don't change the name, don't include it into 'explosion-boosters'
+EGG-SYSTEM:
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/FireworkEffect.Type.html
+  effect: STAR
+  # <integer:1..31>
+  duration-per-item: 5
+  # <integer:1..2047>
+  power-per-item: 1
+
 explosion-boosters:
   - TNT
   - END_CRYSTAL
@@ -37,9 +46,3 @@ HEAVY_CORE:
   effect: CREEPER
   duration-per-item: 10
   power-per-item: 50
-
-# WARNING: Don't change the name, don't include it into 'explosion-boosters'
-EGG-SYSTEM:
-  effect: STAR
-  duration-per-item: 5
-  power-per-item: 1
