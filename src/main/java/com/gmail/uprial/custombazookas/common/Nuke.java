@@ -12,6 +12,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /*
@@ -66,9 +67,10 @@ public class Nuke {
             final Entity source,
             final float explosionRadius,
             final int initialDelay,
-            final Supplier<Integer> nextDelayGenerator) {
+            final Supplier<Integer> nextDelayGenerator,
+            final Consumer<Long> callback) {
 
-        // final long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
         int delay = initialDelay;
         schedule(() -> explode(fromLocation, source), delay);
@@ -87,13 +89,10 @@ public class Nuke {
             schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), delay);
         }
 
-        /*
         schedule(() -> {
             final long end = System.currentTimeMillis();
-            System.out.println(String.format("A Nuke with %.0f explosion radius took %,d ms.",
-                    explosionRadius, end - start));
+            callback.accept(end - start);
         }, delay + nextDelayGenerator.get());
-         */
     }
 
     /*

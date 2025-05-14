@@ -13,10 +13,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.gmail.uprial.custombazookas.common.Formatter.format;
 
@@ -237,9 +234,17 @@ public class FireworkEngine {
                         format(firework.getLocation()), explosionPower));
             }
         } else {
-            new Nuke(plugin).explode(firework.getLocation(), source, explosionPower, 1, () -> 2);
-            customLogger.info(String.format("Firework exploded at %s with power %d",
-                    format(firework.getLocation()), explosionPower));
+            final String fireworkId = UUID.randomUUID().toString().substring(0, 8);
+            new Nuke(plugin).explode(firework.getLocation(), source, explosionPower,
+                    1, () -> 2,
+                    (final Long time) -> {
+                        if (customLogger.isDebugMode()) {
+                            customLogger.debug(String.format("Firework %s explosion took %,d ms.",
+                                    fireworkId, time));
+                        }
+                    });
+            customLogger.info(String.format("Firework %s exploded at %s with power %d",
+                    fireworkId, format(firework.getLocation()), explosionPower));
         }
     }
 
