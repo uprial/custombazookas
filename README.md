@@ -6,7 +6,7 @@ Tested on Spigot-1.21.5.
 
 ## Introduction
 
-Make bazookas from fireworks joined with TNTs, end crystals, nether stars, and spawn eggs.
+Make bazookas from fireworks joined with TNTs, end crystals, nether stars, heavy cores, spawn eggs.
 
 ## Features
 
