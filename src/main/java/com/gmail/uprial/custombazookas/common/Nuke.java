@@ -14,6 +14,10 @@ import org.bukkit.util.Vector;
 import java.util.Set;
 import java.util.function.Supplier;
 
+/*
+    This file is published in
+    https://www.spigotmc.org/threads/big-16-blocks-non-laggy-explosion-implementation.673807/
+ */
 public class Nuke {
     /*
         According to https://minecraft.wiki/w/Explosion,
