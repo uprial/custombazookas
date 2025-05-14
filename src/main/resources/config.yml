@@ -35,7 +35,7 @@ NETHER_STAR:
 
 HEAVY_CORE:
   effect: CREEPER
-  duration-per-item: 7
+  duration-per-item: 10
   power-per-item: 50
 
 # WARNING: Don't change the name, don't include it into 'explosion-boosters'
