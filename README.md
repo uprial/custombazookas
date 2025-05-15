@@ -25,7 +25,11 @@ Make a bazooka:
 ![Zombie-4](https://raw.githubusercontent.com/uprial/custombazookas/master/images/zombie-4.png)
 ![Blaze-8](https://raw.githubusercontent.com/uprial/custombazookas/master/images/blaze-8.png)
 
-Fire the bazooka:
+Load a crossbow in your left hand and the bazooka in your right
+
+![Load-a-crossbow](https://raw.githubusercontent.com/uprial/custombazookas/master/images/load-a-crossbow.png)
+
+Let's fire:
 
 ![Explosion-8](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-8.png)
 ![Explosion-20](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-20.png)
