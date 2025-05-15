@@ -53,6 +53,10 @@ public final class CustomBazookas extends JavaPlugin {
 
         final CustomBazookasConfig customBazookasConfig = loadConfig(getConfig(), userLogger, consoleLogger);
         if(customBazookasConfig != null) {
+            /*
+                Most other plugins will throw exceptions after a wrong configuration load,
+                but this one is specifically careful because it changes player assets.
+             */
             unregister();
             register(customBazookasConfig);
             return true;
