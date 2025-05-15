@@ -32,6 +32,7 @@ Load a crossbow in your left hand and the bazooka in your right:
 Let's fire:
 
 ![Explosion-8](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-8.png)
+![Explosion-10](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-10.png)
 ![Explosion-20](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-20.png)
 ![Explosion-400](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-400.png)
 ![Explosion-400](https://raw.githubusercontent.com/uprial/custombazookas/master/images/explosion-400-2.png)
