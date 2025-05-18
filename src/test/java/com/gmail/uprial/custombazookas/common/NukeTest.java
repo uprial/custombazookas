@@ -26,8 +26,11 @@ public class NukeTest {
             zeroLocation = new Location(world, 0, 0, 0);
         }
 
+        void callback() {
+        }
+
         void explode(final float radius) {
-            super.explode(zeroLocation, null, radius, 0, () -> 0, (t) -> {});
+            super.explode(zeroLocation, null, radius, 0, () -> 0, (t) -> this.callback());
         }
     }
 
@@ -75,6 +78,27 @@ public class NukeTest {
         @Override
         void explode(final Location fromLocation, final Entity source) {
             explosions++;
+        }
+    }
+
+    private static class NukeCallbacksCounter extends NukeMock {
+        private int callbacks;
+
+        NukeCallbacksCounter() {
+            super();
+        }
+
+        int test(final float radius) {
+            callbacks = 0;
+
+            explode(radius);
+
+            return callbacks;
+        }
+
+        @Override
+        void callback() {
+            callbacks++;
         }
     }
 
@@ -155,5 +179,12 @@ public class NukeTest {
         assertEquals(16, nuke.test(30));
         assertEquals(17, nuke.test(31));
         assertEquals(18, nuke.test(32));
+    }
+
+    @Test
+    public void testCallback() {
+        final NukeCallbacksCounter nuke = new NukeCallbacksCounter();
+
+        assertEquals(1, nuke.test(10));
     }
 }
