@@ -4,6 +4,7 @@ import com.gmail.uprial.custombazookas.CustomBazookas;
 import com.gmail.uprial.custombazookas.common.CustomLogger;
 import com.gmail.uprial.custombazookas.common.Nuke;
 import com.google.common.collect.ImmutableMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +27,7 @@ public class FireworkEngine {
 
     final static int MAGIC_TYPE_EXPLOSIVE = 0;
 
-    private final static Map<Integer, EntityType> MAGIC_TYPE_2_ENTITY_TYPE = ImmutableMap.<Integer,EntityType>builder()
+    private final static Map<Integer, EntityType> MAGIC_TYPE_2_ENTITY_TYPE = patch(ImmutableMap.<Integer,EntityType>builder()
             .put(1, EntityType.ARMADILLO)
             .put(2, EntityType.ALLAY)
             .put(3, EntityType.AXOLOTL)
@@ -107,10 +108,19 @@ public class FireworkEngine {
             .put(78, EntityType.ZOMBIE_HORSE)
             .put(79, EntityType.ZOMBIE_VILLAGER)
             .put(80, EntityType.ZOMBIFIED_PIGLIN)
-
-            .put(81, EntityType.CREAKING)
             // 84 is the max number in the current design
-            .build();
+            .build());
+
+    private static Map<Integer, EntityType> patch(final Map<Integer, EntityType> map) {
+        try {
+            // 1.21.5
+            map.put(81, EntityType.CREAKING);
+        } catch (NoSuchFieldError ignored) {
+            Bukkit.getServer().getLogger().info("EntityType.CREAKING not found, skipping");
+        }
+
+        return map;
+    }
 
     private final static Map<EntityType, Integer> ENTITY_TYPE_2_MAGIC_TYPE = invert(MAGIC_TYPE_2_ENTITY_TYPE);
 

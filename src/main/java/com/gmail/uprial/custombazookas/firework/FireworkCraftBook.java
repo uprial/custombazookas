@@ -2,6 +2,7 @@ package com.gmail.uprial.custombazookas.firework;
 
 import com.gmail.uprial.custombazookas.CustomBazookas;
 import com.google.common.collect.ImmutableMap;
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,7 +20,7 @@ class FireworkCraftBook {
 
     private final CustomBazookas plugin;
 
-    private final Map<Material, EntityType> egg2entity = ImmutableMap.<Material,EntityType>builder()
+    private final Map<Material, EntityType> egg2entity = patch(ImmutableMap.<Material,EntityType>builder()
             .put(Material.ARMADILLO_SPAWN_EGG, EntityType.ARMADILLO)
             .put(Material.ALLAY_SPAWN_EGG, EntityType.ALLAY)
             .put(Material.AXOLOTL_SPAWN_EGG, EntityType.AXOLOTL)
@@ -100,9 +101,18 @@ class FireworkCraftBook {
             .put(Material.ZOMBIE_HORSE_SPAWN_EGG, EntityType.ZOMBIE_HORSE)
             .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, EntityType.ZOMBIE_VILLAGER)
             .put(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, EntityType.ZOMBIFIED_PIGLIN)
+            .build());
 
-            .put(Material.CREAKING_SPAWN_EGG, EntityType.CREAKING)
-            .build();
+    private static Map<Material, EntityType> patch(final Map<Material, EntityType> map) {
+        try {
+            // 1.21.5
+            map.put(Material.CREAKING_SPAWN_EGG, EntityType.CREAKING);
+        } catch (NoSuchFieldError ignored) {
+            Bukkit.getServer().getLogger().info("EntityType.CREAKING not found, skipping");
+        }
+
+        return map;
+    }
 
     private final Set<NamespacedKey> addedKeys = new HashSet<>();
 
