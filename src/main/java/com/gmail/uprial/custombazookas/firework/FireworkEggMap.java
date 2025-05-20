@@ -103,8 +103,8 @@ public class FireworkEggMap {
         }
     }
 
-    private void put(final int id, final Material eggMaterial, final EntityType entityType) {
-        final FireworkEgg egg = new FireworkEgg(id, eggMaterial, entityType);
+    private void put(final int uniqueId, final Material eggMaterial, final EntityType entityType) {
+        final FireworkEgg egg = new FireworkEgg(uniqueId, eggMaterial, entityType);
 
         putItem(uniqueId2egg, egg.getUniqueId(), egg);
         putItem(entityType2egg, egg.getEntityType(), egg);
