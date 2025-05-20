@@ -3,136 +3,27 @@ package com.gmail.uprial.custombazookas.firework;
 import com.gmail.uprial.custombazookas.CustomBazookas;
 import com.gmail.uprial.custombazookas.common.CustomLogger;
 import com.gmail.uprial.custombazookas.common.Nuke;
-import com.google.common.collect.ImmutableMap;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.*;
 
 import static com.gmail.uprial.custombazookas.common.Formatter.format;
 
 public class FireworkEngine {
-    /*
-        According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/FireworkMeta.html,
-        the power of the firework can be 0-255.
-     */
-    public final static int MAX_DISTANCE = 255;
-
-    final static int MAGIC_TYPE_EXPLOSIVE = 0;
-
-    private final static Map<Integer, EntityType> MAGIC_TYPE_2_ENTITY_TYPE = patch(ImmutableMap.<Integer,EntityType>builder()
-            .put(1, EntityType.ARMADILLO)
-            .put(2, EntityType.ALLAY)
-            .put(3, EntityType.AXOLOTL)
-            .put(4, EntityType.BAT)
-            .put(5, EntityType.BEE)
-            .put(6, EntityType.BLAZE)
-            .put(7, EntityType.BOGGED)
-            .put(8, EntityType.BREEZE)
-            .put(9, EntityType.CAT)
-            .put(10, EntityType.CAMEL)
-            .put(11, EntityType.CAVE_SPIDER)
-            .put(12, EntityType.CHICKEN)
-            .put(13, EntityType.COD)
-            .put(14, EntityType.COW)
-            .put(15, EntityType.CREEPER)
-            .put(16, EntityType.DOLPHIN)
-            .put(17, EntityType.DONKEY)
-            .put(18, EntityType.DROWNED)
-            .put(19, EntityType.ELDER_GUARDIAN)
-            .put(20, EntityType.ENDER_DRAGON)
-            .put(21, EntityType.ENDERMAN)
-            .put(22, EntityType.ENDERMITE)
-            .put(23, EntityType.EVOKER)
-            .put(24, EntityType.FOX)
-            .put(25, EntityType.FROG)
-            .put(26, EntityType.GHAST)
-            .put(27, EntityType.GLOW_SQUID)
-            .put(28, EntityType.GOAT)
-            .put(29, EntityType.GUARDIAN)
-            .put(30, EntityType.HOGLIN)
-            .put(31, EntityType.HORSE)
-            .put(32, EntityType.HUSK)
-            .put(33, EntityType.IRON_GOLEM)
-            .put(34, EntityType.LLAMA)
-            .put(35, EntityType.MAGMA_CUBE)
-            .put(36, EntityType.MOOSHROOM)
-            .put(37, EntityType.MULE)
-            .put(38, EntityType.OCELOT)
-            .put(39, EntityType.PANDA)
-            .put(40, EntityType.PARROT)
-            .put(41, EntityType.PHANTOM)
-            .put(42, EntityType.PIG)
-            .put(43, EntityType.PIGLIN)
-            .put(44, EntityType.PIGLIN_BRUTE)
-            .put(45, EntityType.PILLAGER)
-            .put(46, EntityType.POLAR_BEAR)
-            .put(47, EntityType.PUFFERFISH)
-            .put(48, EntityType.RABBIT)
-            .put(49, EntityType.RAVAGER)
-            .put(50, EntityType.SALMON)
-            .put(51, EntityType.SHEEP)
-            .put(52, EntityType.SHULKER)
-            .put(53, EntityType.SILVERFISH)
-            .put(54, EntityType.SKELETON)
-            .put(55, EntityType.SKELETON_HORSE)
-            .put(56, EntityType.SLIME)
-            .put(57, EntityType.SNIFFER)
-            .put(58, EntityType.SNOW_GOLEM)
-            .put(59, EntityType.SPIDER)
-            .put(60, EntityType.SQUID)
-            .put(61, EntityType.STRAY)
-            .put(62, EntityType.STRIDER)
-            .put(63, EntityType.TADPOLE)
-            .put(64, EntityType.TRADER_LLAMA)
-            .put(65, EntityType.TROPICAL_FISH)
-            .put(66, EntityType.TURTLE)
-            .put(67, EntityType.VEX)
-            .put(68, EntityType.VILLAGER)
-            .put(69, EntityType.VINDICATOR)
-            .put(70, EntityType.WANDERING_TRADER)
-            .put(71, EntityType.WARDEN)
-            .put(72, EntityType.WITCH)
-            .put(73, EntityType.WITHER)
-            .put(74, EntityType.WITHER_SKELETON)
-            .put(75, EntityType.WOLF)
-            .put(76, EntityType.ZOGLIN)
-            .put(77, EntityType.ZOMBIE)
-            .put(78, EntityType.ZOMBIE_HORSE)
-            .put(79, EntityType.ZOMBIE_VILLAGER)
-            .put(80, EntityType.ZOMBIFIED_PIGLIN)
-            // 84 is the max number in the current design
-            .build());
-
-    private static Map<Integer, EntityType> patch(final Map<Integer, EntityType> map) {
-        try {
-            // 1.21.5
-            map.put(81, EntityType.CREAKING);
-        } catch (NoSuchFieldError ignored) {
-            Bukkit.getServer().getLogger().info("EntityType.CREAKING not found, skipping");
-        }
-
-        return map;
-    }
-
-    private final static Map<EntityType, Integer> ENTITY_TYPE_2_MAGIC_TYPE = invert(MAGIC_TYPE_2_ENTITY_TYPE);
-
     private final CustomBazookas plugin;
     private final CustomLogger customLogger;
+
     private final FireworkCraftBook craftBook;
 
     public FireworkEngine(final CustomBazookas plugin, final CustomLogger customLogger) {
         this.plugin = plugin;
         this.customLogger = customLogger;
 
-        craftBook = new FireworkCraftBook(plugin);
+        craftBook = new FireworkCraftBook(plugin, customLogger);
     }
 
     public void enableCraftBook(final FireworkBooster eggSystem, final List<FireworkBooster> explosionBoosters) {
@@ -141,55 +32,6 @@ public class FireworkEngine {
 
     public void disableCraftBook() {
         craftBook.disable();
-    }
-
-    static void apply(
-            final ItemStack itemStack,
-            final FireworkEffect.Type type,
-            final int duration,
-            final EntityType entityType,
-            final int entityAmount) {
-
-        apply(itemStack, type, duration,
-                ENTITY_TYPE_2_MAGIC_TYPE.get(entityType),
-                entityAmount,
-                String.format("Spawns: %d x %s", entityAmount, entityType));
-    }
-
-    static void apply(
-            final ItemStack itemStack,
-            final FireworkEffect.Type type,
-            final int duration,
-            final int explosionPower) {
-
-        apply(itemStack, type, duration,
-                MAGIC_TYPE_EXPLOSIVE,
-                explosionPower,
-                String.format("Explosion power: %d", explosionPower));
-    }
-
-    private static void apply(
-            final ItemStack itemStack,
-            final FireworkEffect.Type effect,
-            final int duration,
-            final int type,
-            final int amount,
-            final String description) {
-
-        final FireworkMeta fireworkMeta = (FireworkMeta) itemStack.getItemMeta();
-
-        fireworkMeta.addEffect(FireworkEffect.builder()
-                .with(effect)
-                .withColor(FireworkMagicColor.encode(new FireworkMagic(FireworkMagicCode.TYPE, type)))
-                .withColor(FireworkMagicColor.encode(new FireworkMagic(FireworkMagicCode.AMOUNT, amount)))
-                .build());
-        fireworkMeta.setPower(duration);
-
-        fireworkMeta.setLore(Collections.singletonList(description));
-
-        itemStack.setItemMeta(fireworkMeta);
-
-        itemStack.addUnsafeEnchantment(Enchantment.FLAME,  1);
     }
 
     public void onExplode(final Firework firework) {
@@ -224,14 +66,16 @@ public class FireworkEngine {
     }
 
     private void trigger(final Firework firework, final int type, final int amount) {
-        if(type == MAGIC_TYPE_EXPLOSIVE) {
+        if(craftBook.isExplosive(type)) {
             explode(firework, amount);
-        } else if (MAGIC_TYPE_2_ENTITY_TYPE.containsKey(type)) {
-            final EntityType entityType = MAGIC_TYPE_2_ENTITY_TYPE.get(type);
-            spawn(firework, entityType, amount);
         } else {
-            customLogger.warning(String.format("Firework at %s has unrecognized magic %d",
-                    format(firework.getLocation()), type));
+            final EntityType entityType = craftBook.getEntityTypeByUniqueId(type);
+            if (entityType != null) {
+                spawn(firework, entityType, amount);
+            } else {
+                customLogger.warning(String.format("Firework at %s has unrecognized magic %d",
+                        format(firework.getLocation()), type));
+            }
         }
     }
 
@@ -267,14 +111,5 @@ public class FireworkEngine {
             customLogger.debug(String.format("Firework exploded at %s with %d x %s",
                     format(firework.getLocation()), entityAmount, entityType));
         }
-    }
-
-    private static <K,V> Map<V,K> invert(final Map<K,V> map) {
-        final Map<V,K> result = new HashMap<>();
-        for(final Map.Entry<K,V> entry : map.entrySet()) {
-            result.put(entry.getValue(), entry.getKey());
-        }
-
-        return result;
     }
 }

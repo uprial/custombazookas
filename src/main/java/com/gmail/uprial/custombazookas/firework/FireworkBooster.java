@@ -16,11 +16,17 @@ public class FireworkBooster {
     private final int durationPerItem;
     private final int powerPerItem;
 
+    static final int MAX_BOOSTERS = 8;
+
+    /*
+        According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/FireworkMeta.html,
+        the power of the firework can be 0-255.
+     */
     private static final int MAX_DURATION_PER_BOOSTER
-            = FireworkEngine.MAX_DISTANCE / FireworkCraftBook.MAX_BOOSTERS;
+            = 255 / MAX_BOOSTERS;
 
     private static final int MAX_POWER_PER_BOOSTER
-            = FireworkMagicColor.getMaxValue() / FireworkCraftBook.MAX_BOOSTERS;
+            = FireworkMagicColor.getMaxValue() / MAX_BOOSTERS;
 
     private FireworkBooster(final Material material,
                             final FireworkEffect.Type effect,
