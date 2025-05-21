@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 class FireworkCraftBook {
-    final static int MAGIC_UNIQUE_ID_EXPLOSIVE = 0;
+    final static int UNIQUE_ID_EXPLOSIVE = 0;
 
     private final CustomBazookas plugin;
     private final FireworkEggMap eggMap;
@@ -30,8 +30,8 @@ class FireworkCraftBook {
 
         eggMap = new FireworkEggMap(customLogger);
 
-        if(eggMap.getEntityTypeByUniqueId(MAGIC_UNIQUE_ID_EXPLOSIVE) != null) {
-            throw new FireworkError("Duplicate MAGIC_UNIQUE_ID_EXPLOSIVE");
+        if(eggMap.containsUniqueId(UNIQUE_ID_EXPLOSIVE)) {
+            throw new FireworkError("Duplicate UNIQUE_ID_EXPLOSIVE");
         }
     }
 
@@ -62,7 +62,11 @@ class FireworkCraftBook {
     }
 
     boolean isExplosive(final int uniqueId) {
-        return (MAGIC_UNIQUE_ID_EXPLOSIVE == uniqueId);
+        return (UNIQUE_ID_EXPLOSIVE == uniqueId);
+    }
+
+    boolean isEgg(final int uniqueId) {
+        return eggMap.containsUniqueId(uniqueId);
     }
 
     EntityType getEntityTypeByUniqueId(final int uniqueId) {
@@ -95,7 +99,7 @@ class FireworkCraftBook {
 
         final ItemStack itemStack = new ItemStack(Material.FIREWORK_ROCKET);
         enchant(itemStack, type, duration,
-                MAGIC_UNIQUE_ID_EXPLOSIVE,
+                UNIQUE_ID_EXPLOSIVE,
                 explosionPower,
                 String.format("Explosion power: %d", explosionPower));
 
@@ -123,6 +127,11 @@ class FireworkCraftBook {
 
         itemStack.setItemMeta(fireworkMeta);
 
+        /*
+            The only purpose of this enhancement is
+            to create a visual effect
+            to differentiate fireworks and bazookas.
+         */
         itemStack.addUnsafeEnchantment(Enchantment.FLAME,  1);
     }
 

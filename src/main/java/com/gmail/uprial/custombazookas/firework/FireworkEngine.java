@@ -45,7 +45,7 @@ public class FireworkEngine {
                         type = magic.getValue();
                     } else if (magic.getCode() == FireworkMagicCode.AMOUNT) {
                         amount = magic.getValue();
-                    /// } else { -- no way, see
+                    /// } else { -- no way, see FireworkMagicCode
                     }
                 }
             }
@@ -68,14 +68,16 @@ public class FireworkEngine {
     private void trigger(final Firework firework, final int type, final int amount) {
         if(craftBook.isExplosive(type)) {
             explode(firework, amount);
+        /*
+            The following comparison mostly improves code readability
+            and might be replaced to (getEntityTypeByUniqueId(type) == null)
+            if it had an internal nullability check.
+         */
+        } else if (craftBook.isEgg(type)) {
+            spawn(firework, craftBook.getEntityTypeByUniqueId(type), amount);
         } else {
-            final EntityType entityType = craftBook.getEntityTypeByUniqueId(type);
-            if (entityType != null) {
-                spawn(firework, entityType, amount);
-            } else {
-                customLogger.warning(String.format("Firework at %s has unrecognized magic %d",
-                        format(firework.getLocation()), type));
-            }
+            customLogger.warning(String.format("Firework at %s has unrecognized magic %d",
+                    format(firework.getLocation()), type));
         }
     }
 

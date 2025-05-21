@@ -110,16 +110,16 @@ public class FireworkEggMap {
         putItem(entityType2egg, egg.getEntityType(), egg);
     }
 
+    boolean containsUniqueId(final int uniqueId) {
+        return uniqueId2egg.containsKey(uniqueId);
+    }
+
     EntityType getEntityTypeByUniqueId(final int uniqueId) {
-        return uniqueId2egg.containsKey(uniqueId)
-                ? uniqueId2egg.get(uniqueId).getEntityType()
-                : null;
+        return uniqueId2egg.get(uniqueId).getEntityType();
     }
 
     Integer getUniqueIdByEntityType(final EntityType entityType) {
-        return entityType2egg.containsKey(entityType)
-                ? entityType2egg.get(entityType).getUniqueId()
-                : null;
+        return entityType2egg.get(entityType).getUniqueId();
     }
 
     Collection<FireworkEgg> getAllEggs() {

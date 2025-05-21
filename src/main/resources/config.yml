@@ -26,6 +26,8 @@ explosion-boosters:
   - END_CRYSTAL
   - NETHER_STAR
   - HEAVY_CORE
+  # To add your own explosion boosters, refer to other entity types:
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 
 TNT:
   effect: BURST
