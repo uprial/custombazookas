@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.gmail.uprial.custombazookas.common.Formatter.format;
 
@@ -90,7 +91,7 @@ public class FireworkEngine {
                         format(firework.getLocation()), explosionPower));
             }
         } else {
-            final String fireworkId = UUID.randomUUID().toString().substring(0, 8);
+            final String fireworkId = getUniqueId();
             new Nuke(plugin).explode(firework.getLocation(), source, explosionPower,
                     1, () -> 2,
                     (final Long time) -> {
@@ -105,13 +106,34 @@ public class FireworkEngine {
     }
 
     private void spawn(final Firework firework, final EntityType entityType, final int entityAmount) {
-        for(int i = 0; i < entityAmount; i++) {
-            firework.getWorld().spawnEntity(firework.getLocation(), entityType);
-        }
+        final String fireworkId = getUniqueId();
+        schedule(() -> {
+            for (int i = 0; i < entityAmount; i++) {
+                firework.getWorld().spawnEntity(firework.getLocation(), entityType);
+            }
+        }, 1, (final Long time) -> {
+            if (customLogger.isDebugMode()) {
+                customLogger.debug(String.format("Firework %s explosion took %,d ms.",
+                        fireworkId, time));
+            }
+        });
 
         if (customLogger.isDebugMode()) {
-            customLogger.debug(String.format("Firework exploded at %s with %d x %s",
-                    format(firework.getLocation()), entityAmount, entityType));
+            customLogger.debug(String.format("Firework %s exploded at %s with %d x %s",
+                    fireworkId, format(firework.getLocation()), entityAmount, entityType));
         }
+    }
+
+    private void schedule(final Runnable task, final long delay, final Consumer<Long> callback) {
+        final long start = System.currentTimeMillis();
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            task.run();
+            final long end = System.currentTimeMillis();
+            callback.accept(end - start);
+        }, delay);
+    }
+
+    private String getUniqueId() {
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }

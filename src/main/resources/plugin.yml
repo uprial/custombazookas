@@ -1,6 +1,6 @@
 name: CustomBazookas
 main: com.gmail.uprial.custombazookas.CustomBazookas
-version: 0.1.2
+version: 0.1.3
 api-version: 1.14
 commands:
   custombazookas:
