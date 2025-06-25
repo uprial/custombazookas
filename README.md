@@ -41,6 +41,7 @@ Let's fire:
 ## Commands
 
 `custombazookas reload` - reload config from disk
+
 `custombazookas give @player @key @power @amount` - subj
 
 ## Permissions
