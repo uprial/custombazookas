@@ -5,9 +5,11 @@ import com.gmail.uprial.custombazookas.common.CustomLogger;
 import com.gmail.uprial.custombazookas.common.Nuke;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.inventory.Recipe;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -33,6 +35,10 @@ public class FireworkEngine {
 
     public void disableCraftBook() {
         craftBook.disable();
+    }
+
+    public Recipe getRecipe(final Material material, final int amount) {
+         return craftBook.getRecipe(material, amount);
     }
 
     public void onExplode(final Firework firework) {

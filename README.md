@@ -41,11 +41,15 @@ Let's fire:
 ## Commands
 
 `custombazookas reload` - reload config from disk
+`custombazookas give @player @key @power @amount` - subj
 
 ## Permissions
 
 * Access to 'reload' command:
 `custombazookas.reload` (default: op)
+
+* Access to 'give' command:
+`custombazookas.give` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)

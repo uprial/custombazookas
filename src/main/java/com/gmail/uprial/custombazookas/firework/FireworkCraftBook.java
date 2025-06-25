@@ -8,6 +8,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -59,6 +60,10 @@ class FireworkCraftBook {
             plugin.getServer().removeRecipe(key);
         }
         addedKeys.clear();
+    }
+
+    Recipe getRecipe(final Material material, final int amount) {
+        return plugin.getServer().getRecipe(getNamespacedKey(material, amount));
     }
 
     boolean isExplosive(final int uniqueId) {
@@ -140,14 +145,18 @@ class FireworkCraftBook {
             final int amount,
             final ItemStack itemStack) {
 
-        final String key = String.format("e-f-%s-%d", material.toString().toLowerCase(), amount);
-        final NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
-        final ShapelessRecipe recipe = new ShapelessRecipe(namespacedKey, itemStack);
+        final NamespacedKey key = getNamespacedKey(material, amount);
+        final ShapelessRecipe recipe = new ShapelessRecipe(key, itemStack);
 
         recipe.addIngredient(1, Material.FIREWORK_ROCKET);
         recipe.addIngredient(amount, material);
 
         plugin.getServer().addRecipe(recipe);
-        addedKeys.add(namespacedKey);
+        addedKeys.add(key);
+    }
+
+    private NamespacedKey getNamespacedKey(final Material material, final int amount) {
+        final String key = String.format("e-f-%s-%d", material.toString().toLowerCase(), amount);
+        return new NamespacedKey(plugin, key);
     }
 }

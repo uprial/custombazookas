@@ -4,10 +4,12 @@ import com.gmail.uprial.custombazookas.common.CustomLogger;
 import com.gmail.uprial.custombazookas.config.InvalidConfigException;
 import com.gmail.uprial.custombazookas.firework.FireworkEngine;
 import com.gmail.uprial.custombazookas.listeners.*;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -46,6 +48,20 @@ public final class CustomBazookas extends JavaPlugin {
         if(fireworkEngine != null) {
             fireworkEngine.disableCraftBook();
         }
+    }
+
+    public Player getPlayerByName(final String playerName) {
+        for(Player player : getServer().getOnlinePlayers()) {
+            if(player.getName().equalsIgnoreCase(playerName)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public Recipe getRecipe(final Material material, final int amount) {
+        return fireworkEngine.getRecipe(material, amount);
     }
 
     public boolean reloadCustomBazookasConfig(CustomLogger userLogger) {

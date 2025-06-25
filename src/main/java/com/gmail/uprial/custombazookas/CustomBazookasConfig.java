@@ -6,7 +6,6 @@ import com.gmail.uprial.custombazookas.config.InvalidConfigException;
 import com.gmail.uprial.custombazookas.firework.FireworkBooster;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@ public class FireworkBooster {
     private final int durationPerItem;
     private final int powerPerItem;
 
-    static final int MAX_BOOSTERS = 8;
+    public static final int MAX_BOOSTERS = 8;
 
     /*
         According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/FireworkMeta.html,

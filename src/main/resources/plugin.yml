@@ -1,6 +1,6 @@
 name: CustomBazookas
 main: com.gmail.uprial.custombazookas.CustomBazookas
-version: 0.1.3
+version: 0.2.0
 api-version: 1.14
 commands:
   custombazookas:
@@ -11,4 +11,7 @@ commands:
 permissions:
   custombazookas.reload:
     description: Gives access to CustomBazookas 'reload' command
+    default: op
+  custombazookas.give:
+    description: Gives access to CustomBazookas 'give' command
     default: op
