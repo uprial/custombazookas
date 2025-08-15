@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
+import java.util.Locale;
+
 class CustomBazookasCommandExecutor implements CommandExecutor {
     public static final String COMMAND_NS = "custombazookas";
 
@@ -47,7 +49,7 @@ class CustomBazookasCommandExecutor implements CommandExecutor {
 
                     final Material material;
                     try {
-                        material = Material.valueOf(args[2]);
+                        material = Material.valueOf(args[2].toUpperCase(Locale.getDefault()));
                     } catch (IllegalArgumentException ignored) {
                         customLogger.error(String.format("Material '%s' does not exist.", args[2]));
                         return false;
