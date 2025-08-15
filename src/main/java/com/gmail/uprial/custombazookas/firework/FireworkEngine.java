@@ -3,12 +3,14 @@ package com.gmail.uprial.custombazookas.firework;
 import com.gmail.uprial.custombazookas.CustomBazookas;
 import com.gmail.uprial.custombazookas.common.CustomLogger;
 import com.gmail.uprial.custombazookas.common.Nuke;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 
 import java.util.*;
@@ -41,7 +43,54 @@ public class FireworkEngine {
          return craftBook.getRecipe(material, amount);
     }
 
+    public void onLaunch(final Firework firework, final Entity source) {
+        fetch(firework, (final int type, final int explosionPower) -> {
+            if(craftBook.isExplosive(type) && isNuclearPower(explosionPower)) {
+                /*
+                    According to https://minecraft.wiki/w/TNT,
+                    Primed TNT creates explosions with a power of 4.
+
+                    Radius | kiloton
+                        20 | 0.1
+                       140 | 43.9
+                 */
+                final double kt = Math.pow(explosionPower / 4.0D, 3.0D) / 1_000;
+                for(final Player p : firework.getServer().getOnlinePlayers()) {
+                    if(!p.isValid()) {
+                        // nop
+                    } else if(p.getUniqueId().equals(source.getUniqueId())) {
+                        p.sendMessage(String.format(
+                                "%sNuclear launch made, est. %.1f kt",
+                                ChatColor.YELLOW, kt));
+                    } else if (p.getWorld().getUID().equals(source.getWorld().getUID())) {
+                        p.sendMessage(String.format(
+                                "%sNuclear launch detected in %.0f block distance, est. %.1f kt",
+                                ChatColor.YELLOW, firework.getLocation().distance(p.getLocation()), kt));
+                    } else {
+                        p.sendMessage(String.format(
+                                "%sNuclear launch detected in another world",
+                                ChatColor.YELLOW));
+                    }
+                }
+                customLogger.info(String.format(
+                        "Nuke %s launched at %s by %s with power %d, est. %.1f kt",
+                        getNukeId(firework),
+                        format(firework.getLocation()), format(source), explosionPower, kt));
+            }
+        });
+    }
+
     public void onExplode(final Firework firework) {
+        fetch(firework, (final int type, final int amount) -> {
+            trigger(firework, type, amount);
+        });
+    }
+
+    private interface FetchCallback {
+        void call(final int type, final int amount);
+    }
+
+    private void fetch(final Firework firework, final FetchCallback callback) {
         for(final FireworkEffect effect : firework.getFireworkMeta().getEffects()) {
             Integer type = null;
             Integer amount = null;
@@ -58,7 +107,7 @@ public class FireworkEngine {
             }
 
             if((type != null) && (amount != null)) {
-                trigger(firework, type, amount);
+                callback.call(type, amount);
             } else if (type != null) {
                 customLogger.warning(String.format("Firework at %s has only magic type: %d",
                         format(firework.getLocation()), type));
@@ -90,44 +139,33 @@ public class FireworkEngine {
 
     private void explode(final Firework firework, final int explosionPower) {
         final Entity source = firework.getShooter() instanceof Entity ? (Entity)firework.getShooter() : null;
-        if (explosionPower <= Nuke.MAX_ENGINE_POWER) {
-            firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true, source);
-            if (customLogger.isDebugMode()) {
-                customLogger.debug(String.format("Firework exploded at %s with power %d",
-                        format(firework.getLocation()), explosionPower));
-            }
-        } else {
-            final String fireworkId = getUniqueId();
+        if (isNuclearPower(explosionPower)) {
             new Nuke(plugin).explode(firework.getLocation(), source, explosionPower,
                     1, () -> 2,
                     (final Long time) -> {
-                        if (customLogger.isDebugMode()) {
-                            customLogger.debug(String.format("Firework %s explosion took %,d ms.",
-                                    fireworkId, time));
-                        }
+                        customLogger.info(String.format("Nuke %s exploded at %s by %s with power %d in %,d ms",
+                                getNukeId(firework),
+                                format(firework.getLocation()), format(source), explosionPower, time));
                     });
-            customLogger.info(String.format("Firework %s exploded at %s with power %d",
-                    fireworkId, format(firework.getLocation()), explosionPower));
+        } else {
+            firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true, source);
+            if (customLogger.isDebugMode()) {
+                customLogger.debug(String.format("Firework exploded at %s by %s with power %d",
+                        format(firework.getLocation()), format(source), explosionPower));
+            }
         }
     }
 
     private void spawn(final Firework firework, final EntityType entityType, final int entityAmount) {
-        final String fireworkId = getUniqueId();
+        final Entity source = firework.getShooter() instanceof Entity ? (Entity)firework.getShooter() : null;
         schedule(() -> {
             for (int i = 0; i < entityAmount; i++) {
                 firework.getWorld().spawnEntity(firework.getLocation(), entityType);
             }
         }, 1, (final Long time) -> {
-            if (customLogger.isDebugMode()) {
-                customLogger.debug(String.format("Firework %s explosion took %,d ms.",
-                        fireworkId, time));
-            }
+            customLogger.info(String.format("Egg exploded at %s by %s with %d x %s in %,d ms",
+                    format(firework.getLocation()), format(source), entityAmount, entityType, time));
         });
-
-        if (customLogger.isDebugMode()) {
-            customLogger.debug(String.format("Firework %s exploded at %s with %d x %s",
-                    fireworkId, format(firework.getLocation()), entityAmount, entityType));
-        }
     }
 
     private void schedule(final Runnable task, final long delay, final Consumer<Long> callback) {
@@ -139,7 +177,11 @@ public class FireworkEngine {
         }, delay);
     }
 
-    private String getUniqueId() {
-        return UUID.randomUUID().toString().substring(0, 8);
+    private boolean isNuclearPower(final int power) {
+        return power > Nuke.MAX_ENGINE_POWER;
+    }
+
+    private String getNukeId(final Firework firework) {
+        return firework.getUniqueId().toString().substring(0, 8);
     }
 }
