@@ -19,14 +19,20 @@ import java.util.function.Consumer;
 import static com.gmail.uprial.custombazookas.common.Formatter.format;
 
 public class FireworkEngine {
+    public static final int MAX_POWER = FireworkMagicColor.getMaxValue();
+
     private final CustomBazookas plugin;
     private final CustomLogger customLogger;
+    private final int nukeBroadcastThreshold;
 
     private final FireworkCraftBook craftBook;
 
-    public FireworkEngine(final CustomBazookas plugin, final CustomLogger customLogger) {
+    public FireworkEngine(final CustomBazookas plugin,
+                          final CustomLogger customLogger,
+                          final int nukeBroadcastThreshold) {
         this.plugin = plugin;
         this.customLogger = customLogger;
+        this.nukeBroadcastThreshold = nukeBroadcastThreshold;
 
         craftBook = new FireworkCraftBook(plugin, customLogger);
     }
@@ -45,7 +51,7 @@ public class FireworkEngine {
 
     public void onLaunch(final Firework firework, final Entity source) {
         fetch(firework, (final int type, final int explosionPower) -> {
-            if(craftBook.isExplosive(type) && isNuclearPower(explosionPower)) {
+            if(craftBook.isExplosive(type) && (explosionPower >= nukeBroadcastThreshold)) {
                 /*
                     According to https://minecraft.wiki/w/TNT,
                     Primed TNT creates explosions with a power of 4.
@@ -139,7 +145,13 @@ public class FireworkEngine {
 
     private void explode(final Firework firework, final int explosionPower) {
         final Entity source = firework.getShooter() instanceof Entity ? (Entity)firework.getShooter() : null;
-        if (isNuclearPower(explosionPower)) {
+        if (explosionPower <= Nuke.MAX_ENGINE_POWER) {
+            firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true, source);
+            if (customLogger.isDebugMode()) {
+                customLogger.debug(String.format("Firework exploded at %s by %s with power %d",
+                        format(firework.getLocation()), format(source), explosionPower));
+            }
+        } else {
             new Nuke(plugin).explode(firework.getLocation(), source, explosionPower,
                     1, () -> 2,
                     (final Long time) -> {
@@ -147,12 +159,6 @@ public class FireworkEngine {
                                 getNukeId(firework),
                                 format(firework.getLocation()), format(source), explosionPower, time));
                     });
-        } else {
-            firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true, source);
-            if (customLogger.isDebugMode()) {
-                customLogger.debug(String.format("Firework exploded at %s by %s with power %d",
-                        format(firework.getLocation()), format(source), explosionPower));
-            }
         }
     }
 
@@ -175,10 +181,6 @@ public class FireworkEngine {
             final long end = System.currentTimeMillis();
             callback.accept(end - start);
         }, delay);
-    }
-
-    private boolean isNuclearPower(final int power) {
-        return power > Nuke.MAX_ENGINE_POWER;
     }
 
     private String getNukeId(final Firework firework) {

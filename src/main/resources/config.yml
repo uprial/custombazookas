@@ -48,3 +48,14 @@ HEAVY_CORE:
   effect: CREEPER
   duration-per-item: 10
   power-per-item: 50
+
+#
+# Broadcast 'Nuclear launch detected'
+# when an explosion power is bigger
+# than this threshold.
+#
+# <integer:17..16384>
+#
+# 17 is the minimum explosion power when "nuclear" mechanic is used.
+#
+nuke-broadcast-threshold: 17

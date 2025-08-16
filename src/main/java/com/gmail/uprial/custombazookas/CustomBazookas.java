@@ -30,23 +30,24 @@ public final class CustomBazookas extends JavaPlugin {
 
         consoleLogger = new CustomLogger(getLogger());
 
-        fireworkEngine = new FireworkEngine(this, consoleLogger);
         register(loadConfig(getConfig(), consoleLogger));
-
-        getServer().getPluginManager().registerEvents(new ExplosiveFireworkListener(fireworkEngine), this);
 
         getCommand(COMMAND_NS).setExecutor(new CustomBazookasCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
     }
 
     private void register(final CustomBazookasConfig customBazookasConfig) {
+        fireworkEngine = new FireworkEngine(this, consoleLogger, customBazookasConfig.getNukeBroadcastThreshold());
         fireworkEngine.enableCraftBook(customBazookasConfig.getEggSystem(), customBazookasConfig.getExplosionBoosters());
+        getServer().getPluginManager().registerEvents(new ExplosiveFireworkListener(fireworkEngine), this);
     }
 
     private void unregister() {
+        HandlerList.unregisterAll(this);
         // If onEnable() didn't finish, this variable is highly probably null.
         if(fireworkEngine != null) {
             fireworkEngine.disableCraftBook();
+            fireworkEngine = null;
         }
     }
 
@@ -84,7 +85,6 @@ public final class CustomBazookas extends JavaPlugin {
     @Override
     public void onDisable() {
         unregister();
-        HandlerList.unregisterAll(this);
         consoleLogger.info("Plugin disabled");
     }
 

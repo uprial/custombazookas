@@ -64,10 +64,29 @@ public class CustomBazookasConfigTest extends TestConfigBase {
     }
 
     @Test
+    public void testTooSmallNukeBroadcastThreshold() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("A 'nuke-broadcast-threshold' should be at least 17");
+        loadConfig(getDebugFearingCustomLogger(), "debug: false",
+                "EGG-SYSTEM:",
+                "  effect: STAR",
+                "  duration-per-item: 1",
+                "  power-per-item: 2",
+                "explosion-boosters:",
+                "  - TNT",
+                "TNT:",
+                "  effect: BURST",
+                "  duration-per-item: 1",
+                "  power-per-item: 2",
+                "nuke-broadcast-threshold: 16");
+    }
+
+    @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
                 "EGG-SYSTEM: {material: null, effect: STAR, duration-per-item: 1, power-per-item: 2}, " +
-                        "explosion-boosters: [{material: TNT, effect: BURST, duration-per-item: 1, power-per-item: 2}]",
+                        "explosion-boosters: [{material: TNT, effect: BURST, duration-per-item: 1, power-per-item: 2}], " +
+                        "nuke-broadcast-threshold: 17",
                 loadConfig(getCustomLogger(), "debug: false",
                         "EGG-SYSTEM:",
                         "  effect: STAR",
@@ -78,6 +97,7 @@ public class CustomBazookasConfigTest extends TestConfigBase {
                         "TNT:",
                         "  effect: BURST",
                         "  duration-per-item: 1",
-                        "  power-per-item: 2").toString());
+                        "  power-per-item: 2",
+                        "nuke-broadcast-threshold: 17").toString());
     }
 }
