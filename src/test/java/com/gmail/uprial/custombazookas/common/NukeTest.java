@@ -30,7 +30,7 @@ public class NukeTest {
         }
 
         void explode(final float radius) {
-            super.explode(zeroLocation, null, radius, 0, () -> 0, (t) -> this.callback());
+            super.explode(zeroLocation, null, radius, true, 0, () -> 0, (t) -> this.callback());
         }
     }
 
@@ -50,12 +50,12 @@ public class NukeTest {
         }
 
         @Override
-        void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius) {
+        void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius, final boolean witherFluids) {
             layers++;
         }
 
         @Override
-        void explode(final Location fromLocation, final Entity source) {
+        void explode(final Location fromLocation, final Entity source, final boolean witherFluids) {
             // nop
         }
     }
@@ -76,7 +76,7 @@ public class NukeTest {
         }
 
         @Override
-        void explode(final Location fromLocation, final Entity source) {
+        void explode(final Location fromLocation, final Entity source, final boolean witherFluids) {
             explosions++;
         }
     }

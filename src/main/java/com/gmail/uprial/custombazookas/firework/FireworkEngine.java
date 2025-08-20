@@ -152,7 +152,7 @@ public class FireworkEngine {
                         format(firework.getLocation()), format(source), explosionPower));
             }
         } else {
-            new Nuke(plugin).explode(firework.getLocation(), source, explosionPower,
+            new Nuke(plugin).explode(firework.getLocation(), source, explosionPower, true,
                     1, () -> 2,
                     (final Long time) -> {
                         customLogger.info(String.format("Nuke %s exploded at %s by %s with power %d in %,d ms",

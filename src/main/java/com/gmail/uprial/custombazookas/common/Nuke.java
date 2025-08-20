@@ -62,10 +62,11 @@ public class Nuke {
         The explosions are supposed to be distributed evenly, but not ideally:
         the explosion isn't actually a smooth ball, especially for smaller values of radius.
      */
-    public void explode(
+    public int explode(
             final Location fromLocation,
             final Entity source,
             final float explosionRadius,
+            final boolean witherFluids,
             final int initialDelay,
             final Supplier<Integer> nextDelayGenerator,
             final Consumer<Long> callback) {
@@ -73,7 +74,7 @@ public class Nuke {
         final long start = System.currentTimeMillis();
 
         int delay = initialDelay;
-        schedule(() -> explode(fromLocation, source), delay);
+        schedule(() -> explode(fromLocation, source, witherFluids), delay);
 
         final int spheres = Math.round(explosionRadius / STEP);
         /*
@@ -86,20 +87,23 @@ public class Nuke {
         for(int i = 1; i < spheres; i++) {
             delay += nextDelayGenerator.get();
             final float sphereRadius = i * STEP;
-            schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), delay);
+            schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius, witherFluids), delay);
         }
 
+        delay += nextDelayGenerator.get();
         schedule(() -> {
             final long end = System.currentTimeMillis();
             callback.accept(end - start);
-        }, delay + nextDelayGenerator.get());
+        }, delay);
+
+        return delay;
     }
 
     /*
         The main generation method idea:
         https://stackoverflow.com/questions/63726093/how-to-easily-make-a-mesh-of-sphere-3d-points-over-a-vector
      */
-    void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius) {
+    void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius, final boolean witherFluids) {
         /*
             To distribute angles evenly,
             must be a number not equal to 1.0D nor 0.0D, closer to 1.0D.
@@ -129,7 +133,7 @@ public class Nuke {
                 toLocation.subtract(direction);
             }
 
-            explode(toLocation, source);
+            explode(toLocation, source, witherFluids);
         }
     }
 
@@ -176,7 +180,10 @@ public class Nuke {
         return getDensity(sphereRadius, getExplosionDistance(explosionRadius, sphereRadius));
     }
 
-    void explode(final Location fromLocation, final Entity source) {
+    void explode(final Location fromLocation, final Entity source, final boolean witherFluids) {
+        if(witherFluids) {
+            witherFluids(fromLocation);
+        }
         /*
         Based on explosion radius 400 test:
 
@@ -190,7 +197,7 @@ public class Nuke {
 
         I decided to set the beautiful fire. :-)
          */
-        witherFluids(fromLocation);
+        // OLD: fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true);
         fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true, source);
     }
 
